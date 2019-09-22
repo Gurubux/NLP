@@ -2,6 +2,58 @@ W1 - Sentiment in text
 Tokenization
 New Headline Sarcasm
 BBC News Headline
+Introduction, A conversation with Andrew Ng
+Introduction
+"Word based encodings"
+Using APIs
+Notebook for lesson 1
+Text to sequence
+Looking more at the "Tokenizer"
+"Padding"
+Notebook for lesson 2
+Sarcasm, really?
+Working with the Tokenizer
+@News headlines dataset for sarcasm detection
+Notebook for lesson 3
+Week 1 Wrap up
+LTI Item: Exercise 1- Explore the BBC news archive
+@LTI Item Exercise  Answer Explore the BBC news archive
+
+Word Embedding
+Tokenizing
+Text to Padded Sequences using Word Embedding-(Tokenizing)
+///////////////////////////////////////////////////////////////////////////////
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+#sentences =  List of sentences 
+tokenizer = Tokenizer(num_words = 100, oov_token="<OOV>") # num_words = n most common words from the text # oov_token = Out Of Vocab
+tokenizer.fit_on_texts(sentences)
+
+#{word:index}
+word_index = tokenizer.word_index
+#{'<OOV>': 1, 'apple' = 2, ....}
+
+#Sequences
+sequences = tokenizer.texts_to_sequences(sentences)
+#[[4,5,2,1],[7,5,2],[4,2],[9,4,5,8,10,9]....]
+
+#padding
+padded = pad_sequences(sequences, maxlen=5, padding='post') # maxlen = By Default Longest Sentence  # padding = by default 'pre'
+#[[0,0,0,0,0,4,5,2,1],[0,0,0,0,0,0,7,5,2],[0,0,0,0,0,0,0,4,2],[0,0,0,0,9,4,5,8,10,9]....]
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+from gensim.parsing.preprocessing import remove_stopwords
+
+# pass the sentence in the remove_stopwords function
+filtered_sentences=[]
+for text in sentences:
+    result = remove_stopwords(text)
+    filtered_sentences.append(result)
+sentences = filtered_sentences
+///////////////////////////////////////////////////////////////////////////////
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -133,6 +185,33 @@ print(seed_text)
 "Help me Obi Wan Kenobi, you're my only hope" are you with your rhyme rhyme part to tell pain ride go wide near survey rare exceeds razed gone or forth each ` lies go delight skill past way dwells quite fitted fitted twain hate men past days twain twain go rhyme delight tongue delight skill report light hits fitted sway`st quite fitted back live good rage doth date light quite quite had did give ill twain write `tis me life away things fire fire past youth so best live they forsworn thee die mine eyes grew ill decrease decrease in their moan me in hate night new new days
 
 
-LA Technologies 
-Develop portlets for Liferay Framework based Web portal of Adani Electricity, Mumbai. Undertake requirements gathering, programming, deploying and Unit testing the applications on the Live Site.
-Technical skills inculcated were Java, SQL, HTML5, CSS3, Javascript, RestAPI, SOAP with the necessary non-technical abilities of team work, coordination and communication fluency.
+
+
+
+
+Have experience in projects like Digit Recognition, Image recognition, classification, object detection using skimage, PIL, CNN using tensorflow and keras. 
+Working knowledge of OpenCV Framework.
+
+Kindly refer to few of the projects done on Image Datasets.
+
+1. Deep Neural Network – TensorFlow 
+– Image Classification 
+- Hand SIGNS dataset  
+- Classify Hand gestures whether they symbolize 1,2,3,4 or Thumbs Up.
+
+2. CNN – Keras – Image Classification
+ConvNet in Keras for a classifying Emotion on Face whether Happy or Not
+
+3. YOLO – Object Detection
+- Images from car on road while driving
+- Use object detection on a car detection dataset. Deal with bounding boxes. Use YOLO Pretrained model
+
+4. RNN – LSTM – Sequence classification – Image
+MNIST
+If we consider every image row as a sequence of pixels, we can feed a LSTM network for classification.
+https://colab.research.google.com/github/Gurubux/CognitiveClass-DL/blob/master/2_Deep_Learning_with_TensorFlow/DL_CC_2_3_RNN/3.4-Review-LSTM-MNIST-Database.ipynb#scrollTo=r5G9oTB1J0Sl
+
+
+5. Action Recognition
+Steps to Classify video clips based on the action performed in the Clip
+https://github.com/Gurubux/Internships/blob/master/Quantiphi/Gurubux_Quantiphi_ProblemSet1_Sol.pdf
