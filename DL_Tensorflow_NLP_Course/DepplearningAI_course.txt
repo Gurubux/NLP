@@ -22,7 +22,7 @@ LTI Item: Exercise 1- Explore the BBC news archive
 Word Embedding
 Tokenizing
 Text to Padded Sequences using Word Embedding-(Tokenizing)
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////Tokenizer////////////////////////////////////////////
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -43,8 +43,9 @@ padded = pad_sequences(sequences, maxlen=5, padding='post') # maxlen = By Defaul
 #[[0,0,0,0,0,4,5,2,1],[0,0,0,0,0,0,7,5,2],[0,0,0,0,0,0,0,4,2],[0,0,0,0,9,4,5,8,10,9]....]
 
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////Tokenizer////////////////////////////////////////////
+
+///////////////////////////////////REMOVE STOPWORDS////////////////////////////////////////////
 from gensim.parsing.preprocessing import remove_stopwords
 
 # pass the sentence in the remove_stopwords function
@@ -52,8 +53,20 @@ filtered_sentences=[]
 for text in sentences:
     result = remove_stopwords(text)
     filtered_sentences.append(result)
-sentences = filtered_sentences
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////REMOVE STOPWORDS////////////////////////////////////////////
+
+Data Set
+BBC News Text https://storage.googleapis.com/laurencemoroney-blog.appspot.com/bbc-text.csv
+	category		text
+0	tech			tv future in the hands of viewers with home th...
+1	business		worldcom boss left books alone former worldc...
+2	sport			tigers wary of farrell gamble leicester say ...
+3	sport			yeading face newcastle in fa cup premiership s...
+4	entertainment	ocean s twelve raids box office ocean s twelve...
+Category  = {'sport': 1, 'business': 2, 'politics': 3, 'tech': 4, 'entertainment': 5}
+
+
+
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -85,6 +98,57 @@ Correct. If embedding_dim = 64, every word is mapped to a vector in a 64-dimensi
 - So, For example, when looking at movie reviews, those movies with positive sentiment had the dimensionality of their words ending up ‘pointing’ a particular way, and those with negative sentiment pointing in a different direction. 
 - From this, the words in future sentences could have their ‘direction’ established, and from this the sentiment inferred. 
 - You then looked at "SUB WORD TOKENIZATION", and saw that not only do the meanings of the words matter, but also the sequence in which they are found.
+
+
+
+vocab_size = 1000
+embedding_dim = 16
+max_length = 120
+trunc_type = 'post'
+padding_type = 'post'
+oov_tok = '<OOV>'
+training_portion = .8
+
+# The following code is to remove stop words from sentence using nltk
+# Created by - ANALYTICS VIDHYA
+
+# importing libraries
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize 
+set(stopwords.words('english'))
+
+corpus = [['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.'],
+			['He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.']]
+# sample sentence
+text = """He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and 
+fishery rihgts at once. He was the more ready to do this becuase the rights had become much less valuable, and he had 
+indeed the vaguest idea where the wood and river in question were."""
+
+# set of stop words
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english')) 
+
+# tokens of words  
+from nltk.tokenize import word_tokenize 
+word_tokens = word_tokenize(text) 
+
+filtered_courpus=[]
+for sentence in corpus:
+	word_tokens = word_tokenize(text)
+	filtered_sentence = [] 
+	for w in word_tokens: 
+	    if w not in stop_words: 
+	        filtered_sentence.append(w) 
+	filtered_courpus.append(filtered_sentence)
+
+
+print("\n\nOriginal Sentence \n\n")
+print(" ".join(word_tokens)) 
+
+print("\n\nFiltered Sentence \n\n")
+print(" ".join(filtered_sentence)) 
+
 
 
 --------------------------------------------------------------------------------------------------------------------
