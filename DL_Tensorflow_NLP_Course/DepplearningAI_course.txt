@@ -1,0 +1,138 @@
+W1 - Sentiment in text
+Tokenization
+New Headline Sarcasm
+BBC News Headline
+
+
+--------------------------------------------------------------------------------------------------------------------
+W2 - Word Embeddings
+IMDB Dataset
+	http://ai.stanford.edu/~amaas/data/sentiment/
+	You will find here 50,000 movie reviews which are classified as positive of negative.
+
+To Install datasets in tensrflow
+!pip intall -q tensorflow-datasets
+
+
+import tensorflow_datasets as tfds
+imdb, info = tfds.load("imdb_reviews",with_info=True, as_supervised = True)
+
+
+
+Tensorflow Datasets
+https://www.tensorflow.org/datasets/catalog/overview
+
+
+
+Embedding layer gives the vector value of words?
+Correct. If embedding_dim = 64, every word is mapped to a vector in a 64-dimensional space (a vector with 64 elements).
+
+
+- This week you looked at taking your tokenized words and using "EMBEDDINGS" to establish meaning from them in a mathematical way. 
+- Words were mapped to vectors in higher dimensional space, and the semantics of the words then learned when those words were labelled with similar meaning. 
+- So, For example, when looking at movie reviews, those movies with positive sentiment had the dimensionality of their words ending up ‘pointing’ a particular way, and those with negative sentiment pointing in a different direction. 
+- From this, the words in future sentences could have their ‘direction’ established, and from this the sentiment inferred. 
+- You then looked at "SUB WORD TOKENIZATION", and saw that not only do the meanings of the words matter, but also the sequence in which they are found.
+
+
+--------------------------------------------------------------------------------------------------------------------
+W3 - Sequence models
+In the last couple of weeks you looked first at Tokenizing words to get numeric values from them, and then using Embeddings to group words of similar meaning depending on how they were labelled. This gave you a good, but rough, sentiment analysis -- words such as 'fun' and 'entertaining' might show up in a positive movie review, and 'boring' and 'dull' might show up in a negative one. 
+But sentiment can also be determined by the sequence in which words appear. For example, you could have 'not fun', which of course is the opposite of 'fun'. 
+This week you`ll start digging into a variety of model formats that are used in training models to understand CONTEXT IN SEQUENCE!
+
+"Text Generation"
+
+
+
+
+You’ve been experimenting with NLP for text classification over the last few weeks. Next week you’ll switch gears -- and take a look at using the tools that you’ve learned to predict text, which ultimately means you can create text. 
+By learning sequences of words you can predict the most common word that comes next in the sequence, and thus, when starting from a new sequence of words you can create a model that builds on them. 
+You’ll take different training sets -- like traditional Irish songs, or Shakespeare poetry, and learn how to create new sets of words using their embeddings!
+
+
+Single Layer BiDirectional LSTM
+Multiple Layer (Stacked) BiDirectional LSTM
+Conv2d 
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+W4 - Sequence models and literature
+
+
+seed_text = "Laurence went to dublin"
+next_words = 100
+  
+for _ in range(next_words):
+	token_list = tokenizer.texts_to_sequences([seed_text])[0]
+	token_list = pad_sequences([token_list], maxlen=max_sequence_len-1, padding='pre')
+	predicted = model.predict_classes(token_list, verbose=0)
+	output_word = ""
+	for word, index in tokenizer.word_index.items():
+		if index == predicted:
+			output_word = word
+			break
+	seed_text += " " + output_word
+print(seed_text)
+"Laurence went to dublin" a pound would fall lanigan eyes academy academy academy academy water steps stepped out in lanigans ball ball ball lanigans ball dublin dublin dublin dublin steps relations relations relations relations relations relations relations relations ladies relations glisten a lanigan mchugh your kerrigan glisten glisten glisten water steps stepped out in lanigans ball couples and ladies ladies was painted painted painted painted painted runctions kinds nonsensical polkas mavrone taras hall hall hall glisten glisten water academy academy water steps she stepped out and she stepped in again again again again red academy steps a hall hall brothers entangled entangled academy entangled
+
+
+
+seed_text = "I've got a bad feeling about this"
+next_words = 100
+  
+for _ in range(next_words):
+	token_list = tokenizer.texts_to_sequences([seed_text])[0]
+	token_list = pad_sequences([token_list], maxlen=max_sequence_len-1, padding='pre')
+	predicted = model.predict_classes(token_list, verbose=0)
+	output_word = ""
+	for word, index in tokenizer.word_index.items():
+		if index == predicted:
+			output_word = word
+			break
+	seed_text += " " + output_word
+print(seed_text)
+"I've got a bad feeling about this" half dozen stout died and laid the song of the warrior bard shaken silver home now since i spent up in dublin call belfast city and the brother william stood at the door and they ring at me diggin for erin go bragh together again soon i patrick up her pipes bellows chanters and all up with a glass of love easy as the sea came to james connolly cry my a going to a baby on free sweep but away me forget old ireland all care of me darling in strife roaming tomorrow i paid than him went by
+
+https://storage.googleapis.com/laurencemoroney-blog.appspot.com/sonnets.txt
+
+
+Over the last four weeks you`ve gotten a grounding in how to do Natural Language processing with TensorFlow and Keras. You went from first principles -- basic Tokenization and Padding of text to produce data structures that could be used in a Neural Network.
+
+You then learned about embeddings, and how words could be mapped to vectors, and words of similar semantics given vectors pointing in a similar direction, giving you a mathematical model for their meaning, which could then be fed into a deep neural network for classification.
+
+From there you started learning about sequence models, and how they help deepen your understanding of sentiment in text by not just looking at words in isolation, but also how their meanings change when they qualify one another.
+
+You wrapped up by taking everything you learned and using it to build a poetry generator!
+
+This is just a beginning in using TensorFlow for natural language processing. I hope it was a good start for you, and you feel equipped to go to the next level!
+
+
+
+
+seed_text = "Help me Obi Wan Kenobi, you're my only hope"
+next_words = 100
+  
+for _ in range(next_words):
+	token_list = tokenizer.texts_to_sequences([seed_text])[0]
+	token_list = pad_sequences([token_list], maxlen=max_sequence_len-1, padding='pre')
+	predicted = model.predict_classes(token_list, verbose=0)
+	output_word = ""
+	for word, index in tokenizer.word_index.items():
+		if index == predicted:
+			output_word = word
+			break
+	seed_text += " " + output_word
+print(seed_text)
+
+
+"Help me Obi Wan Kenobi, you're my only hope" are you with your rhyme rhyme part to tell pain ride go wide near survey rare exceeds razed gone or forth each ` lies go delight skill past way dwells quite fitted fitted twain hate men past days twain twain go rhyme delight tongue delight skill report light hits fitted sway`st quite fitted back live good rage doth date light quite quite had did give ill twain write `tis me life away things fire fire past youth so best live they forsworn thee die mine eyes grew ill decrease decrease in their moan me in hate night new new days
+
+
+LA Technologies 
+Develop portlets for Liferay Framework based Web portal of Adani Electricity, Mumbai. Undertake requirements gathering, programming, deploying and Unit testing the applications on the Live Site.
+Technical skills inculcated were Java, SQL, HTML5, CSS3, Javascript, RestAPI, SOAP with the necessary non-technical abilities of team work, coordination and communication fluency.
