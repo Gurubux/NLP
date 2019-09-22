@@ -109,46 +109,147 @@ padding_type = 'post'
 oov_tok = '<OOV>'
 training_portion = .8
 
-# The following code is to remove stop words from sentence using nltk
-# Created by - ANALYTICS VIDHYA
 
-# importing libraries
+tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
+tokenizer.fit_on_texts(train_sentences)
+word_index = tokenizer.word_index
+
+train_sequences = tokenizer.texts_to_sequences(train_sentences)
+train_padded = pad_sequences(train_sequences, padding=padding_type, maxlen=max_length)
+(1780,120)
+
+validation_sequences = tokenizer.texts_to_sequences(validation_sentences)
+validation_padded = pad_sequences(validation_sequences, padding=padding_type, maxlen=max_length)
+(445, 120)
+
+
+label_tokenizer = Tokenizer()
+label_tokenizer.fit_on_texts(labels)
+
+training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
+(1780, 1)
+validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
+(445, 1)
+
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    tf.keras.layers.GlobalAveragePooling1D(),
+    tf.keras.layers.Dense(24, activation='relu'),
+    tf.keras.layers.Dense(6, activation='softmax')
+])
+model.compile(loss='sparse_categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+num_epochs = 30
+history = model.fit(train_padded,training_label_seq, epochs=num_epochs, validation_data=(validation_padded, validation_label_seq), verbose=2)
+
+
+model.summary()
+>>>
+	Model: "sequential"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	embedding (Embedding)        (None, 120, 16)           16000     
+	_________________________________________________________________
+	global_average_pooling1d (Gl (None, 16)                0         
+	_________________________________________________________________
+	dense (Dense)                (None, 24)                408       
+	_________________________________________________________________
+	dense_1 (Dense)              (None, 6)                 150       
+	=================================================================
+	Total params: 16,558
+	Trainable params: 16,558
+	Non-trainable params: 0
+
+
+/////////////////////////////////REMOVING STOP WORDS USING NLTK////////////////////////////////////////////
+#REMOVING STOP WORDS USING NLTK
 import nltk
+nltk.download('stopwords')
+
 from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
+
 from nltk.tokenize import word_tokenize 
-set(stopwords.words('english'))
+nltk.download('punkt')
 
-corpus = [['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.'],
-			['He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.']]
-# sample sentence
-text = """He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and 
-fishery rihgts at once. He was the more ready to do this becuase the rights had become much less valuable, and he had 
-indeed the vaguest idea where the wood and river in question were."""
-
-# set of stop words
-from nltk.corpus import stopwords
-stop_words = set(stopwords.words('english')) 
-
-# tokens of words  
-from nltk.tokenize import word_tokenize 
-word_tokens = word_tokenize(text) 
+corpus_ = ['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+			'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.']
 
 filtered_courpus=[]
-for sentence in corpus:
-	word_tokens = word_tokenize(text)
+for sentence in corpus_:
+	word_tokens = word_tokenize(sentence)
 	filtered_sentence = [] 
 	for w in word_tokens: 
 	    if w not in stop_words: 
 	        filtered_sentence.append(w) 
-	filtered_courpus.append(filtered_sentence)
+	filtered_courpus.append(" ".join(filtered_sentence))
+corpus_,filtered_courpus
+len(corpus_[0]),len(filtered_courpus[0])
+"""
+(['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+  'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.'],
+ ['He determined drop litigation monastry , relinguish claims wood-cuting fishery rihgts .',
+  'He ready becuase rights become much less valuable , indeed vaguest idea wood river question .'],
+ 128,
+ 87)
+ """
+///////////////////////////////////REMOVING STOP WORDS USING NLTK//////////////////////////////////////////
 
+///////////////////////////////////REMOVING STOP WORDS USING SPACY//////////////////////////////////////////
 
-print("\n\nOriginal Sentence \n\n")
-print(" ".join(word_tokens)) 
+#  "nlp" Object is used to create documents with linguistic annotations.
+from spacy.lang.en.stop_words import STOP_WORDS
+from spacy.lang.en import English
 
-print("\n\nFiltered Sentence \n\n")
-print(" ".join(filtered_sentence)) 
+# Load English tokenizer, tagger, parser, NER and word vectors
+nlp = English()
 
+corpus_ = ['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+			'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.']
+
+filtered_corpus=[]
+for text in corpus_:
+  my_doc = nlp(text)
+  token_list = [token.text for token in my_doc]
+  filtered_sentence =[] 
+  for word in token_list:
+    lexeme = nlp.vocab[word]
+    if lexeme.is_stop == False:
+      filtered_sentence.append(word)   
+  filtered_corpus.append(" ".join(filtered_sentence))
+corpus_,filtered_courpus,len(corpus_[0]),len(filtered_courpus[0])
+"""
+(['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+  'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.'],
+ ['determined drop litigation monastry , relinguish claims wood - cuting fishery rihgts .',
+  'ready becuase rights valuable ,   vaguest idea wood river question .'],
+ 128,
+ 86)
+ """
+///////////////////////////////////REMOVING STOP WORDS USING SPACY//////////////////////////////////////////
+
+///////////////////////////////////REMOVING STOP WORDS USING Genism//////////////////////////////////////////
+
+from gensim.parsing.preprocessing import remove_stopwords
+corpus_ = ['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+			'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.']
+# pass the sentence in the remove_stopwords function
+filtered_courpus=[]
+for text in corpus_:
+    result = remove_stopwords(text)
+    filtered_courpus.append(result)
+corpus_,filtered_courpus,len(corpus_[0]),len(filtered_courpus[0])
+
+"""
+(['He determined to drop his litigation with the monastry, and relinguish his claims to the wood-cuting and fishery rihgts at once.',
+  'He was the more ready to do this becuase the rights had become much less valuable, and he had  indeed the vaguest idea where the wood and river in question were.'],
+ ['He determined drop litigation monastry, relinguish claims wood-cuting fishery rihgts once.',
+  'He ready becuase rights valuable, vaguest idea wood river question were.'],
+ 128,
+ 90)
+ """
+///////////////////////////////////REMOVING STOP WORDS USING Genism//////////////////////////////////////////
 
 
 --------------------------------------------------------------------------------------------------------------------
