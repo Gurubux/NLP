@@ -141,7 +141,9 @@ model = tf.keras.Sequential([
 model.compile(loss='sparse_categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 num_epochs = 30
 history = model.fit(train_padded,training_label_seq, epochs=num_epochs, validation_data=(validation_padded, validation_label_seq), verbose=2)
-
+>>>
+	Epoch 30/30
+	1780/1780 - 0s - loss: 0.0376 - acc: 0.9983 - val_loss: 0.1951 - val_acc: 0.9461
 
 model.summary()
 >>>
@@ -160,6 +162,28 @@ model.summary()
 	Total params: 16,558
 	Trainable params: 16,558
 	Non-trainable params: 0
+
+
+
+reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
+(27285)
+
+e = model.layers[0]
+weights = e.get_weights()[0]
+(1000, 16)
+
+import io
+
+out_v = io.open('vecs.tsv', 'w', encoding='utf-8')
+out_m = io.open('meta.tsv', 'w', encoding='utf-8')
+for word_num in range(1, vocab_size):
+  word = reverse_word_index[word_num]
+  embeddings = weights[word_num]
+  out_m.write(word + "\n")
+  out_v.write('\t'.join([str(x) for x in embeddings]) + "\n")
+out_v.close()
+out_m.close()
+
 
 
 /////////////////////////////////REMOVING STOP WORDS USING NLTK////////////////////////////////////////////
